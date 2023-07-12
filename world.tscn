@@ -1,0 +1,97 @@
+[gd_scene load_steps=11 format=3 uid="uid://ctcboww0dorud"]
+
+[ext_resource type="Script" path="res://World.gd" id="3_ohc8w"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tw2jk"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_p6rhk"]
+sky_material = SubResource("ProceduralSkyMaterial_tw2jk")
+
+[sub_resource type="Environment" id="Environment_no1qf"]
+background_mode = 2
+sky = SubResource("Sky_p6rhk")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ic4n1"]
+albedo_color = Color(0.117647, 0.737255, 0.0235294, 1)
+emission = Color(0.756863, 0.168627, 0.427451, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v3gin"]
+vertex_color_is_srgb = true
+emission_enabled = true
+emission = Color(0.760784, 0.113725, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_idcdc"]
+metallic_specular = 0.0
+emission_enabled = true
+emission = Color(0.0588235, 0.588235, 0.0352941, 1)
+disable_receive_shadows = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cu00c"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1k7eq"]
+vertex_color_is_srgb = true
+emission_enabled = true
+emission = Color(0, 0, 0.941176, 1)
+normal_enabled = true
+normal_scale = 1.02
+normal_texture = SubResource("NoiseTexture2D_cu00c")
+
+[sub_resource type="PrismMesh" id="PrismMesh_l4an5"]
+
+[node name="World" type="Node3D"]
+script = ExtResource("3_ohc8w")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_no1qf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.259714, -0.702749, 0.662338, -0.256543, 0.711438, 0.65425, -0.930986, 1.60051e-08, -0.365056, 5.30559, 4.86337, 0)
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(50, 0, 0, 0, 0.1, 0, 0, 0, 50, 0, 0, 0)
+cast_shadow = 0
+use_collision = true
+material = SubResource("StandardMaterial3D_ic4n1")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 5, 0, 0, 0, 50, -25.6417, 0.11956, 0)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 50, 0, 5, 0, -1, 0, -2.18557e-06, 0.34337, 0.11956, 24.6336)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 50, 0, 5, 0, -1, 0, -2.18557e-06, -0.385092, 0.11956, -24.977)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 5, 0, 0, 0, 50, 24.8513, 0.11956, -0.413258)
+material_override = SubResource("StandardMaterial3D_v3gin")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.4298, 1.76633, 0.558689)
+material_override = SubResource("StandardMaterial3D_idcdc")
+use_collision = true
+size = Vector3(1.05367, 2.34115, 6.49456)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.56393, 1.76633, 0.558689)
+material_override = SubResource("StandardMaterial3D_1k7eq")
+use_collision = true
+size = Vector3(1.05367, 2.34115, 6.49456)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://player.tscn")
+spawn_path = NodePath("../SpawnPoint")
+spawn_limit = 2
+
+[node name="Objects" type="Node" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.11643, 7.74277)
+mesh = SubResource("PrismMesh_l4an5")
+
+[node name="SpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.70927, 5.77922, 4.6282)

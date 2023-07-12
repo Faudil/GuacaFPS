@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dcnf4ne8tmhvt"]
+
+[ext_resource type="PackedScene" uid="uid://dxghha1exilxt" path="res://pistol.gltf" id="1_ucbsa"]
+[ext_resource type="Script" path="res://pistol.gd" id="2_h4tk1"]
+
+[node name="pistol" instance=ExtResource("1_ucbsa")]
+script = ExtResource("2_h4tk1")
+
+[node name="BulletSpawn" type="Node3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0409404, 1.09443, 0.863402)
