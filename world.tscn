@@ -85,7 +85,7 @@ size = Vector3(1.05367, 2.34115, 6.49456)
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://player.tscn")
 spawn_path = NodePath("../SpawnPoint")
-spawn_limit = 2
+spawn_limit = 12
 
 [node name="Objects" type="Node" parent="."]
 

@@ -61,9 +61,3 @@ func change_level(scene: PackedScene):
 	# Add new level.
 	level.add_child(scene.instantiate())
 
-# The server can restart the level by pressing HOME.
-func _input(event):
-	if not multiplayer.is_server():
-		return
-	if event.is_action("ui_home") and Input.is_action_just_pressed("ui_home"):
-		change_level.call_deferred(load("res://world.tscn"))

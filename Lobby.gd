@@ -33,6 +33,7 @@ func _connected_fail():
 
 @rpc
 func register_player(info):
+	print("New player connected", info)
 	# Get the id of the RPC sender.
 	var id = get_tree().get_rpc_sender_id()
 	# Store the info
