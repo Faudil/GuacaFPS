@@ -16,6 +16,7 @@ var player_info = {}
 var my_info = { name = "Johnson Magenta", favorite_color = Color8(255, 0, 255) }
 
 func _player_connected(id):
+	print("New connection", id)
 	# Called on both clients and server when a peer connects. Send my info to it.
 	rpc_id(id, "register_player", my_info)
 
@@ -23,6 +24,7 @@ func _player_disconnected(id):
 	player_info.erase(id) # Erase player from info.
 
 func _connected_ok():
+	print("WTF")
 	pass # Only called on clients, not server. Will go unused; not useful here.
 
 func _server_disconnected():
@@ -46,6 +48,7 @@ func _process(delta):
 @rpc
 func pre_configure_game():
 	var selfPeerID = get_tree().get_network_unique_id()
+	print("preconfigure_game ", selfPeerID)
 
 	# Load world
 	var world = load("res://").instantiate()
@@ -61,7 +64,7 @@ func pre_configure_game():
 	for p in player_info:
 		var player = preload("res://player.tscn").instantiate()
 		player.set_name(str(p))
-		player.set_multiplayer_authority(p) # Will be explained later
+		player.set_multiplayer_authority(p)
 		get_node("/root/world/players").add_child(player)
 
 	# Tell server (remember, server is always ID=1) that this peer is done pre-configuring.

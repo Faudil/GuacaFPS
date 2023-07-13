@@ -40,6 +40,7 @@ func _on_connect_pressed():
 	if peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
 		OS.alert("Connecting")
 	multiplayer.multiplayer_peer = peer
+	print("AAAAAAAAAAAAA")
 	start_game()
 
 func start_game():
@@ -49,6 +50,7 @@ func start_game():
 	# Only change level on the server.
 	# Clients will instantiate the level via the spawner.
 	if multiplayer.is_server():
+		print("AAAAAAAAAAAAA")
 		change_level.call_deferred(load("res://world.tscn"))
 
 # Call this function deferred and only on the main authority (server).

@@ -14,6 +14,7 @@ var _mouse_movement = Vector2()
 
 func _ready():
 	# Only process for the local player.
+	print("PlayerInput ", multiplayer.get_unique_id())
 	set_process(get_multiplayer_authority() == multiplayer.get_unique_id())
 	if not OS.has_feature("dedicated_server"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

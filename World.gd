@@ -2,21 +2,31 @@ extends Node3D
 
 const SPAWN_RANDOM := 5.0
 
+var connected_players = []
+
 func _ready():
 	# We only need to spawn players on the server.
 	if not multiplayer.is_server():
+		print("Not multiplayer server")
 		return
+	else:
+		print('Is multiplayer server')
 
 	multiplayer.peer_connected.connect(add_player)
 	multiplayer.peer_disconnected.connect(del_player)
 
 	# Spawn already connected players
 	for id in multiplayer.get_peers():
-		add_player(id)
-
+		print("Add player", id)
+		if id in connected_players:
+			print("NOOOOOOOOOO")
+		else:
+			connected_players.append(id)
+			# add_player(id)
+	print("Lobby setup")
 	# Spawn the local player unless this is a dedicated server export.
-	if not OS.has_feature("dedicated_server"):
-		add_player(1)
+	# if not OS.has_feature("dedicated_server"):
+	#	add_player(1)
 
 
 func _exit_tree():
