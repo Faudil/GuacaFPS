@@ -28,7 +28,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="UI/Net/Option"]
 layout_mode = 2
-text = "Plop
+text = "My IP adress is
 "
 
 [node name="Connect" type="Button" parent="UI/Net/Option"]
@@ -43,6 +43,9 @@ text = "127.0.0.1"
 layout_mode = 2
 keep_pressed_outside = true
 text = "Host"
+
+[node name="Host Ip adress" type="Label" parent="UI/Net"]
+layout_mode = 2
 
 [connection signal="pressed" from="UI/Net/Option/Connect" to="." method="_on_connect_pressed"]
 [connection signal="pressed" from="UI/Net/Option/Host" to="." method="_on_host_pressed"]

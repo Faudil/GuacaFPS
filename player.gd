@@ -19,6 +19,10 @@ const FOV_CHANGE = 1.5
 var gravity = 9.8
 
 
+
+ 
+
+
 # Set by the authority, synchronized on spawn.
 @export var player := 1:
 	set(id):
@@ -31,7 +35,6 @@ var gravity = 9.8
 
 func _ready():
 	if player == multiplayer.get_unique_id():
-		print(player)
 		$Head/Camera3D.current = true
 
 
@@ -53,18 +56,26 @@ func _physics_process(delta):
 		speed = WALK_SPEED
 	input.jumping = false
 
+	# Camera rotation
 	$Head.rotate_y(-input.mouse_movement.x * SENSITIVITY)
 	camera.rotate_x(-input.mouse_movement.y * SENSITIVITY)
 	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-40), deg_to_rad(60))
+	# Weapon sway
+	var weapon = $Head/Camera3D/Hand/pistol
+	var x_mov = -input.mouse_movement.x
+	weapon.apply_weapon_sway(x_mov, delta)
+	# Reset mouse movement
 	input.mouse_movement = Vector2()
+	
 
 	if input.firing:
-		$Head/Camera3D/pistol.fire()
-		print($Head/Camera3D/RayCast3D.is_colliding())
+		weapon.fire()
+		# print($Head/Camera3D/RayCast3D.is_colliding())
 	input.firing = false
 
 	# Get the input direction and handle the movement/deceleration.
 	var input_dir = input.direction
+
 	var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if is_on_floor():
 		if direction:
@@ -85,6 +96,7 @@ func _physics_process(delta):
 	var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
 	var target_fov = BASE_FOV + FOV_CHANGE * velocity_clamped
 	camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
+
 
 	move_and_slide()
 

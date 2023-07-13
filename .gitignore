@@ -1,2 +1,4 @@
 # Godot 4+ specific ignores
 .godot/
+*.exe
+*.x86_64

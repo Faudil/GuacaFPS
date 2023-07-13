@@ -3,6 +3,7 @@ extends Node
 
 const PORT = 4433
 
+
 func _ready():
 	# get_tree().paused = true
 	# You can save bandwidth by disabling server relay and peer notifications.
@@ -36,12 +37,14 @@ func _on_connect_pressed():
 	if peer.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
 		OS.alert("Failed to start multiplayer client")
 		return
+	if peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
+		OS.alert("Connecting")
 	multiplayer.multiplayer_peer = peer
 	start_game()
 
 func start_game():
 	# Hide the UI and unpause to start the game.
-	$UI/Net.hide()
+	$UI/Net/Option.hide()
 	get_tree().paused = false
 	# Only change level on the server.
 	# Clients will instantiate the level via the spawner.
