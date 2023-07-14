@@ -44,7 +44,7 @@ layout_mode = 2
 keep_pressed_outside = true
 text = "Host"
 
-[node name="Host Ip adress" type="Label" parent="UI/Net"]
+[node name="Ping" type="Label" parent="UI/Net"]
 layout_mode = 2
 
 [connection signal="pressed" from="UI/Net/Option/Connect" to="." method="_on_connect_pressed"]

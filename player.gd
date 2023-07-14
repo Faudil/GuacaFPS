@@ -19,10 +19,6 @@ const FOV_CHANGE = 1.5
 var gravity = 9.8
 
 
-
- 
-
-
 # Set by the authority, synchronized on spawn.
 @export var player := 1:
 	set(id):

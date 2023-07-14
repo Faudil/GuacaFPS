@@ -2,7 +2,9 @@
 extends Node
 
 const PORT = 4433
+var enet = ENetMultiplayerPeer.new()
 
+var game_started = false
 
 func _ready():
 	# get_tree().paused = true
@@ -17,12 +19,12 @@ func _ready():
 
 func _on_host_pressed():
 	# Start as server
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(PORT)
-	if peer.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
+
+	enet.create_server(PORT)
+	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
 		OS.alert("Failed to start multiplayer server")
 		return
-	multiplayer.multiplayer_peer = peer
+	multiplayer.multiplayer_peer = enet
 	start_game()
 
 
@@ -32,14 +34,13 @@ func _on_connect_pressed():
 	if txt == "":
 		OS.alert("Need a remote to connect to.")
 		return
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_client(txt, PORT)
-	if peer.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
+	enet.create_client(txt, PORT)
+	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
 		OS.alert("Failed to start multiplayer client")
 		return
-	if peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
+	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
 		OS.alert("Connecting")
-	multiplayer.multiplayer_peer = peer
+	multiplayer.multiplayer_peer = enet
 	print("AAAAAAAAAAAAA")
 	start_game()
 
@@ -47,10 +48,10 @@ func start_game():
 	# Hide the UI and unpause to start the game.
 	$UI/Net/Option.hide()
 	get_tree().paused = false
+	game_started = true
 	# Only change level on the server.
 	# Clients will instantiate the level via the spawner.
 	if multiplayer.is_server():
-		print("AAAAAAAAAAAAA")
 		change_level.call_deferred(load("res://world.tscn"))
 
 # Call this function deferred and only on the main authority (server).
@@ -62,4 +63,17 @@ func change_level(scene: PackedScene):
 		c.queue_free()
 	# Add new level.
 	level.add_child(scene.instantiate())
+
+
+func _process(delta):
+	if not game_started or multiplayer.is_server():
+		return
+	var stat = get_peer_latency(1)
+	$UI/Net/Ping.text = str(stat)
+
+func get_peer_latency(id):
+	var peer = enet.get_peer(id)
+	if peer:
+		return peer.get_statistic(ENetPacketPeer.PEER_ROUND_TRIP_TIME)
+	return 0
 

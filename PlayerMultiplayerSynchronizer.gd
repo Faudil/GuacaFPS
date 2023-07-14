@@ -8,6 +8,7 @@ extends MultiplayerSynchronizer
 @export var mouse_movement = Vector2()
 
 var _mouse_movement = Vector2()
+var _mouse_moved = false
 
 # Synchronized property.
 @export var direction := Vector2()
@@ -27,16 +28,18 @@ func jump():
 @rpc("call_local")
 func fire():
 	firing = true
-	
-@rpc("call_local")
+
+@rpc("call_local", "unreliable")
 func rotate(mouse_position):
 	mouse_movement = mouse_position
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
+		_mouse_moved = true
 		_mouse_movement = event.relative
 
-func _process(_delta):
+
+func _process(delta):
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	direction = Input.get_vector("left", "right", "up", "down")
@@ -44,5 +47,10 @@ func _process(_delta):
 		jump.rpc()
 	if Input.is_action_just_pressed("fire"):
 		fire.rpc()
-	rotate.rpc(_mouse_movement)
-	_mouse_movement = Vector2()
+	if _mouse_moved:
+		rotate.rpc(_mouse_movement)
+		_mouse_moved = false
+		print("Call rpc")
+	else:
+		print("No call")
+

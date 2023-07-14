@@ -16,18 +16,17 @@ func _ready():
 	multiplayer.peer_disconnected.connect(del_player)
 
 	# Spawn already connected players
-	for id in multiplayer.get_peers():
-		print("Add player", id)
-		if id in connected_players:
-			print("NOOOOOOOOOO")
-		else:
-			connected_players.append(id)
+	#for id in multiplayer.get_peers():
+	#	print("Add player", id)
+	#	if id in connected_players:
+	#		print("NOOOOOOOOOO")
+	#	else:
+	#		connected_players.append(id)
 			# add_player(id)
 	print("Lobby setup")
 	# Spawn the local player unless this is a dedicated server export.
-	# if not OS.has_feature("dedicated_server"):
-	#	add_player(1)
-
+	if not OS.has_feature("dedicated_server"):
+		add_player(1)
 
 func _exit_tree():
 	if not multiplayer.is_server():
