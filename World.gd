@@ -50,3 +50,4 @@ func del_player(id: int):
 	if not $SpawnPoint.has_node(str(id)):
 		return
 	$SpawnPoint.get_node(str(id)).queue_free()
+

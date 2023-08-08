@@ -67,7 +67,7 @@ func _physics_process(delta):
 
 	# Handle Sprint.
 	if input.jumping:
-		speed = SPRINT_SPEED
+		speed = SPRINT_SPEED 
 	else:
 		speed = WALK_SPEED
 	input.jumping = false
