@@ -41,7 +41,6 @@ func _on_connect_pressed():
 	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
 		OS.alert("Connecting")
 	multiplayer.multiplayer_peer = enet
-	print("AAAAAAAAAAAAA")
 	start_game()
 
 func start_game():

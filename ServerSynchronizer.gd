@@ -1,7 +1,5 @@
 extends MultiplayerSynchronizer
 
-const SENSITIVITY = 0.004
-
 # Set via RPC to simulate is_action_just_pressed.
 @export var jumping := false
 
@@ -18,7 +16,7 @@ var _mouse_moved = false
 func _ready():
 	# Only process for the local player.
 	print("PlayerInput ", multiplayer.get_unique_id())
-	set_process(multiplayer.get_unique_id() == get_multiplayer_authority())
+	set_process(get_multiplayer_authority() == multiplayer.get_unique_id())
 	if not OS.has_feature("dedicated_server"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -36,17 +34,14 @@ func rotate(mouse_position):
 	mouse_movement = mouse_position
 
 func _unhandled_input(event):
+	if get_multiplayer_authority() != multiplayer.get_unique_id():
+		return
 	if event is InputEventMouseMotion:
-		var camera = $"../Head/Camera3D"
 		_mouse_moved = true
 		_mouse_movement = event.relative
-		#camera.rotate_x(-_mouse_movement.y * SENSITIVITY)
-		#camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-40), deg_to_rad(60))
-
 
 
 func _process(delta):
-
 	var head = $"../Head"
 	# Get the input direction and handle the movement/deceleration.
 	var input_dir = Input.get_vector("left", "right", "up", "down")
@@ -54,17 +49,11 @@ func _process(delta):
 	if Input.is_action_just_pressed("jump"):
 		jump.rpc()
 	if Input.is_action_just_pressed("fire"):
-		fire.rpc()
-		# firing = true
+		# fire.rpc()
+		firing = true
 		pass
-	# Camera rotation
 	if _mouse_moved:
-		rotate.rpc(_mouse_movement)
+		# rotate.rpc(_mouse_movement)
 		_mouse_moved = false
 		mouse_movement = _mouse_movement
-		var camera = $"../Head/Camera3D"
-		$"../Head".rotate_y(-mouse_movement.x * SENSITIVITY)
-		# Camera rotation
-		camera.rotate_x(-mouse_movement.y * SENSITIVITY)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-40), deg_to_rad(60))
 
