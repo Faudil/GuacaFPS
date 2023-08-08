@@ -9,6 +9,10 @@ const SENSITIVITY = 0.004
 
 @export var mouse_movement = Vector2()
 
+@export var camera_x_axis = 0
+
+@export var head_y_axis = 0
+
 var _mouse_movement = Vector2()
 var _mouse_moved = false
 
@@ -67,4 +71,6 @@ func _process(delta):
 		# Camera rotation
 		camera.rotate_x(-mouse_movement.y * SENSITIVITY)
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-40), deg_to_rad(60))
+		camera_x_axis = camera.rotation.x
+		head_y_axis = head.rotation.y
 

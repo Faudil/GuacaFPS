@@ -42,12 +42,14 @@ func fire():
 	weapon.fire()
 	
 @rpc("call_local")
-func rotate_camera():
+func rotate_camera(head_y_axis, camera_x_axis):
+	if player == multiplayer.get_unique_id():
+		return
+	# print('Called in ', player, " for ", multiplayer.get_unique_id())
 	var camera = $Head/Camera3D
-	$Head.rotate_y(-input.mouse_movement.x * SENSITIVITY)
+	$Head.rotation.y = head_y_axis
 	# Camera rotation
-	camera.rotate_x(-input.mouse_movement.y * SENSITIVITY)
-	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-40), deg_to_rad(60))
+	camera.rotation.x = camera_x_axis
 	
 
 func _physics_process(delta):
@@ -74,7 +76,11 @@ func _physics_process(delta):
 		if input.firing:
 			fire.rpc()
 			input.firing = false
-		rotate_camera.rpc()
+		if player != 1:
+			rotate_camera.rpc_id(1, input.head_y_axis, input.camera_x_axis)
+		for id in multiplayer.get_peers():
+			if id != player:
+				rotate_camera.rpc_id(id, input.head_y_axis, input.camera_x_axis)
 
 	# Get the input direction and handle the movement/deceleration.
 	var input_dir = input.direction
