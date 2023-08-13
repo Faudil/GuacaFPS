@@ -55,14 +55,14 @@ func pre_configure_game():
 	get_node("/root").add_child(world)
 
 	# Load my player
-	var my_player = preload("res://player.tscn").instantiate()
+	var my_player = preload("res://scenes/player.tscn").instantiate()
 	my_player.set_name(str(selfPeerID))
 	my_player.set_multiplayer_authority(selfPeerID) # Will be explained later
 	get_node("/root/world/players").add_child(my_player)
 
 	# Load other players
 	for p in player_info:
-		var player = preload("res://player.tscn").instantiate()
+		var player = preload("res://scenes/player.tscn").instantiate()
 		player.set_name(str(p))
 		player.set_multiplayer_authority(p)
 		get_node("/root/world/players").add_child(player)

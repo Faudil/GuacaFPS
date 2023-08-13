@@ -4,6 +4,10 @@ const SPAWN_RANDOM := 5.0
 
 var connected_players = []
 
+var pseudo = ""
+var kills = 0
+
+
 func _ready():
 	# We only need to spawn players on the server.
 	if not multiplayer.is_server():
@@ -36,7 +40,7 @@ func _exit_tree():
 
 
 func add_player(id: int):
-	var character = preload("res://player.tscn").instantiate()
+	var character = preload("res://scenes/player.tscn").instantiate()
 	# Set player id.
 	character.player = id
 	# Randomize character position.
@@ -44,6 +48,25 @@ func add_player(id: int):
 	character.position = Vector3(pos.x * SPAWN_RANDOM * randf(), 0, pos.y * SPAWN_RANDOM * randf())
 	character.name = str(id)
 	$SpawnPoint.add_child(character, true)
+
+
+func _physics_process(delta):
+	for player in $SpawnPoint.get_children():
+		if player.kills > kills:
+			kills = player.kills
+			pseudo = player.get_pseudo()
+	if pseudo:
+		$Control/BestPlayer.text = "Best player: " + pseudo + " with " + str(kills) + ' kills'
+	if Input.is_action_pressed("score"):
+		var player_list = []
+		for player in $SpawnPoint.get_children():
+			player_list.append(player.get_pseudo() + " " + str(player.kills))
+			kills = player.kills
+			pseudo = player.get_pseudo()
+		$Control/AllPlayers.visible = true
+		$Control/AllPlayers.text = "\n".join(player_list)
+	else:
+		$Control/AllPlayers.visible = false
 
 
 func del_player(id: int):

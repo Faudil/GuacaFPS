@@ -12,12 +12,18 @@ func _ready():
 	multiplayer.server_relay = false
 
 
+
 	# Automatically start the server in headless mode.
 	if DisplayServer.get_name() == "headless":
 		print("Automatically starting dedicated server.")
 		_on_host_pressed.call_deferred()
 
 func _on_host_pressed():
+	if $"UI/Net/Player info/Pseudo".text == "":
+		OS.alert("Please enter a pseudo")
+		return
+	var player_vars = get_node("/root/Globals")
+	player_vars.pseudo = $"UI/Net/Player info/Pseudo".text
 	# Start as server
 	enet.create_server(PORT)
 	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
@@ -34,6 +40,11 @@ func _on_connect_pressed():
 	if txt == "":
 		OS.alert("Need a remote to connect to.")
 		return
+	if $"UI/Net/Player info/Pseudo".text == "":
+		OS.alert("Please enter a pseudo")
+		return
+	var player_vars = get_node("/root/Globals")
+	player_vars.pseudo = $"UI/Net/Player info/Pseudo".text
 	enet.create_client(txt, PORT)
 	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
 		OS.alert("Failed to start multiplayer client")
@@ -45,13 +56,13 @@ func _on_connect_pressed():
 
 func start_game():
 	# Hide the UI and unpause to start the game.
-	$UI/Net/Option.hide()
-	get_tree().paused = false
+	$UI/Net.hide()
+	#get_tree().paused = false
 	game_started = true
 	# Only change level on the server.
 	# Clients will instantiate the level via the spawner.
 	if multiplayer.is_server():
-		change_level.call_deferred(load("res://world.tscn"))
+		change_level.call_deferred(load("res://scenes/world.tscn"))
 
 # Call this function deferred and only on the main authority (server).
 func change_level(scene: PackedScene):
@@ -70,12 +81,12 @@ func _process(delta):
 	var stat = get_peer_latency(1)
 	$UI/Net/Ping.text = str(stat)
 
+
 func get_peer_latency(id):
 	var peer = enet.get_peer(id)
 	if peer:
 		return peer.get_statistic(ENetPacketPeer.PEER_ROUND_TRIP_TIME)
 	return 0
-
 
 func upnp_setup():
 	var upnp = UPNP.new()

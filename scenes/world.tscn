@@ -1,0 +1,128 @@
+[gd_scene load_steps=15 format=3 uid="uid://ctcboww0dorud"]
+
+[ext_resource type="Script" path="res://scripts/World.gd" id="1_tgb4r"]
+[ext_resource type="PackedScene" uid="uid://dk8xiv0d00d21" path="res://assets/test_map.blend" id="2_dm3ud"]
+[ext_resource type="PackedScene" uid="uid://8en58gslqw65" path="res://scenes/player.tscn" id="3_e6ej5"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tw2jk"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_p6rhk"]
+sky_material = SubResource("ProceduralSkyMaterial_tw2jk")
+
+[sub_resource type="Environment" id="Environment_no1qf"]
+background_mode = 2
+sky = SubResource("Sky_p6rhk")
+ambient_light_color = Color(0.831373, 0.533333, 0.403922, 1)
+tonemap_mode = 2
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0
+
+[sub_resource type="Gradient" id="Gradient_uiy55"]
+offsets = PackedFloat32Array(0, 0.360544, 0.911565)
+colors = PackedColorArray(0, 0, 0, 1, 0.142857, 0.142857, 0.142857, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kie6d"]
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_xxdpq"]
+color_ramp = SubResource("Gradient_uiy55")
+noise = SubResource("FastNoiseLite_kie6d")
+
+[sub_resource type="FogMaterial" id="FogMaterial_rdi7k"]
+albedo = Color(0.278431, 1, 1, 1)
+density_texture = SubResource("NoiseTexture3D_xxdpq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_idcdc"]
+metallic_specular = 0.0
+emission_enabled = true
+emission = Color(0.0588235, 0.588235, 0.0352941, 1)
+disable_receive_shadows = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_cu00c"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1k7eq"]
+vertex_color_is_srgb = true
+emission_enabled = true
+emission = Color(0, 0, 0.941176, 1)
+normal_enabled = true
+normal_scale = 1.02
+normal_texture = SubResource("NoiseTexture2D_cu00c")
+
+[sub_resource type="PrismMesh" id="PrismMesh_l4an5"]
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_tgb4r")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_no1qf")
+
+[node name="FogVolume" type="FogVolume" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.33875, -3.13003, -12.6105)
+size = Vector3(29.2911, 4.9273, 32.3504)
+material = SubResource("FogMaterial_rdi7k")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 0.962341, 0.271844, 0, -0.271844, 0.962341, 0, 0, 0)
+light_color = Color(0.168627, 1, 1, 1)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.4298, -72.833, 0.558689)
+material_override = SubResource("StandardMaterial3D_idcdc")
+use_collision = true
+size = Vector3(1.05367, 2.34115, 6.49456)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.56393, 1.76633, 0.558689)
+material_override = SubResource("StandardMaterial3D_1k7eq")
+use_collision = true
+size = Vector3(1.05367, 2.34115, 6.49456)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
+spawn_path = NodePath("../SpawnPoint")
+spawn_limit = 12
+
+[node name="Objects" type="Node" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.11643, 7.74277)
+mesh = SubResource("PrismMesh_l4an5")
+
+[node name="SpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.70927, 5.77922, 4.6282)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BestPlayer" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 71.0
+offset_right = 169.0
+offset_bottom = 190.0
+
+[node name="AllPlayers" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 362.0
+offset_top = 160.0
+offset_right = 764.0
+offset_bottom = 389.0
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.69317, -43.3864, -12.6877)
+use_collision = true
+size = Vector3(100, 0, 100)
+
+[node name="test_map" parent="." instance=ExtResource("2_dm3ud")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 4.91425, -1.01314, -8.67895)
+
+[node name="Player" parent="." instance=ExtResource("3_e6ej5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.57197, -43.3864, -53.5378)

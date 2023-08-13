@@ -1,0 +1,180 @@
+[gd_scene load_steps=15 format=3 uid="uid://8en58gslqw65"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_w5dyk"]
+[ext_resource type="Script" path="res://scenes/Head.gd" id="2_qj1lm"]
+[ext_resource type="PackedScene" uid="uid://ddx201y1kukg1" path="res://scenes/pistol.tscn" id="2_w2evq"]
+[ext_resource type="Script" path="res://scripts/PlayerMultiplayerSynchronizer.gd" id="4_mibku"]
+[ext_resource type="AudioStream" uid="uid://d3o4i6hk7e8pt" path="res://assets/sound/hitmarker_reverb.ogg" id="5_kbw75"]
+[ext_resource type="Texture2D" uid="uid://boq2sb28mg1ds" path="res://assets/hitmarker.png" id="5_kxtky"]
+[ext_resource type="Script" path="res://scripts/PlayerStat.gd" id="7_cpe5x"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_y6yuh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_byq3g"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pwti7"]
+properties/0/path = NodePath(".:player")
+properties/0/spawn = true
+properties/0/sync = false
+properties/0/watch = false
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/sync = true
+properties/1/watch = false
+properties/2/path = NodePath(".:velocity")
+properties/2/spawn = true
+properties/2/sync = true
+properties/2/watch = false
+properties/3/path = NodePath(".:rotation")
+properties/3/spawn = true
+properties/3/sync = true
+properties/3/watch = false
+properties/4/path = NodePath("PlayerMultiplayerSynchronizer:pseudo")
+properties/4/spawn = true
+properties/4/sync = true
+properties/4/watch = false
+properties/5/path = NodePath(".:kills")
+properties/5/spawn = true
+properties/5/sync = true
+properties/5/watch = false
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_of66l"]
+properties/0/path = NodePath("PlayerMultiplayerSynchronizer:direction")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+properties/1/path = NodePath("PlayerMultiplayerSynchronizer:camera_x_axis")
+properties/1/spawn = true
+properties/1/sync = true
+properties/1/watch = false
+properties/2/path = NodePath("PlayerMultiplayerSynchronizer:head_y_axis")
+properties/2/spawn = true
+properties/2/sync = true
+properties/2/watch = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rbrq5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1mgq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lajt3"]
+bg_color = Color(0.917647, 0, 0, 1)
+
+[node name="Player" type="CharacterBody3D"]
+safe_margin = 0.5
+script = ExtResource("1_w5dyk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_y6yuh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, 0, 0, 0)
+shape = SubResource("BoxShape3D_byq3g")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.711744, 0)
+script = ExtResource("2_qj1lm")
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0193188, 0.11735, 0.102192)
+
+[node name="Hand" type="Node3D" parent="Head/Camera3D"]
+transform = Transform3D(-0.999315, 0, 0.03701, 0, 1, 0, -0.03701, 0, -0.999315, 1.13702, -0.644305, -1.42612)
+
+[node name="pistol" parent="Head/Camera3D/Hand" instance=ExtResource("2_w2evq")]
+
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D"]
+target_position = Vector3(0, 0, -100)
+debug_shape_custom_color = Color(1, 0, 0, 1)
+debug_shape_thickness = 5
+
+[node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_pwti7")
+
+[node name="PlayerMultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_of66l")
+script = ExtResource("4_mibku")
+
+[node name="Control" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1151.0
+offset_bottom = 645.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="HealthBar" type="ProgressBar" parent="Control"]
+material = SubResource("ShaderMaterial_rbrq5")
+layout_mode = 0
+offset_left = 418.0
+offset_top = 55.0
+offset_right = 682.0
+offset_bottom = 82.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_e1mgq")
+theme_override_styles/fill = SubResource("StyleBoxFlat_lajt3")
+max_value = 3.0
+value = 3.0
+rounded = true
+show_percentage = false
+
+[node name="KillCount" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 503.0
+offset_top = 91.0
+offset_right = 543.0
+offset_bottom = 114.0
+text = "Kills: 0"
+
+[node name="BestPlayer" type="Label" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Info" type="Label" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+
+[node name="Hitmarker" type="TextureRect" parent="Control"]
+visible = false
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.5
+offset_top = -7.5
+offset_right = 10.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_kxtky")
+expand_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.5
+offset_top = -2.5
+offset_right = 2.5
+offset_bottom = 2.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_kbw75")
+volume_db = -10.0
+
+[node name="PlayerStat" type="Node" parent="."]
+script = ExtResource("7_cpe5x")
