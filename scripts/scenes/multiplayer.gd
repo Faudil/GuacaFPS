@@ -3,60 +3,88 @@ extends Node
 
 const PORT = 4433
 var enet = ENetMultiplayerPeer.new()
-
+var external_ip_adress = "Setting up upnp"
 var game_started = false
+
+var player_info_list = []
+var _player_info: PlayerInfo
+
+@onready var start_game_button = $UI/Net/StartGameButton
 
 func _ready():
 	# get_tree().paused = true
 	# You can save bandwidth by disabling server relay and peer notifications.
 	multiplayer.server_relay = false
 
-
-
 	# Automatically start the server in headless mode.
 	if DisplayServer.get_name() == "headless":
 		print("Automatically starting dedicated server.")
-		_on_host_pressed.call_deferred()
+		init_as_host.call_deferred()
 
-func _on_host_pressed():
-	if $"UI/Net/Player info/Pseudo".text == "":
-		OS.alert("Please enter a pseudo")
-		return
-	var player_vars = get_node("/root/Globals")
-	player_vars.pseudo = $"UI/Net/Player info/Pseudo".text
+func init_as_host(player_info: PlayerInfo, max_players: int, dedicated_server: bool=false):
+	_player_info = player_info
+	var pl = player_info.serialize()
+	pl["id"] = 1
+	player_info_list.append(pl)
+	display_player(pl)
 	# Start as server
 	enet.create_server(PORT)
 	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
 		OS.alert("Failed to start multiplayer server")
 		return
 	multiplayer.multiplayer_peer = enet
+	multiplayer.peer_connected.connect(add_player)
+	multiplayer.peer_disconnected.connect(del_player)
 	upnp_setup()
-	start_game()
+	start_game_button.visible = true
+
+@rpc("call_local")
+func display_player(pi: Dictionary):
+	var label = Label.new()
+	var color_rect = ColorRect.new()
+	color_rect.set_custom_minimum_size(Vector2(10, 10))
+	color_rect.color = Color(pi["avatar_color"])
+	label.text = pi["pseudo"] + " " + str(pi["id"])
+	var player_row = HBoxContainer.new()
+	player_row.add_child(color_rect)
+	player_row.add_child(label)
+	$UI/Net.add_child(player_row)
 
 
-func _on_connect_pressed():
-	# Start as client
-	var txt : String = $UI/Net/Option/Remote.text
-	if txt == "":
-		OS.alert("Need a remote to connect to.")
-		return
-	if $"UI/Net/Player info/Pseudo".text == "":
-		OS.alert("Please enter a pseudo")
-		return
-	var player_vars = get_node("/root/Globals")
-	player_vars.pseudo = $"UI/Net/Player info/Pseudo".text
-	enet.create_client(txt, PORT)
+@rpc("any_peer", "call_remote")
+func add_player_client(pi):
+	player_info_list.append(pi)
+	display_player.rpc(pi)
+
+@rpc
+func register_client():
+	var pl = _player_info.serialize()
+	pl["id"] = multiplayer.get_unique_id()
+	add_player_client.rpc_id(1, pl)
+
+func add_player(id: int):
+	var pl = _player_info.serialize()
+	pl["id"] = 1
+	display_player.rpc_id(id, pl)
+	register_client.rpc_id(id)
+	
+
+
+func del_player(id: int):
+	pass
+
+func init_as_client(player_info: PlayerInfo, host: String):
+	_player_info = player_info
+	enet.create_client(host, PORT)
 	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
 		OS.alert("Failed to start multiplayer client")
 		return
-	if enet.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING:
-		OS.alert("Connecting")
 	multiplayer.multiplayer_peer = enet
-	start_game()
+
 
 func start_game():
 	# Hide the UI and unpause to start the game.
-	$UI/Net.hide()
+	$UI.hide()
 	#get_tree().paused = false
 	game_started = true
 	# Only change level on the server.
@@ -72,14 +100,19 @@ func change_level(scene: PackedScene):
 		level.remove_child(c)
 		c.queue_free()
 	# Add new level.
-	level.add_child(scene.instantiate())
+	var instanciated_scene = scene.instantiate()
+	level.add_child(instanciated_scene)
+	instanciated_scene.init(player_info_list)
 
 
 func _process(delta):
-	if not game_started or multiplayer.is_server():
+	if multiplayer.is_server():
 		return
-	var stat = get_peer_latency(1)
-	$UI/Net/Ping.text = str(stat)
+	if not game_started:
+		var stat = get_peer_latency(1)
+		$UI/Net/Ping.text = str(stat)
+	if $Level.get_child_count() > 0:
+		start_game()
 
 
 func get_peer_latency(id):
@@ -90,7 +123,6 @@ func get_peer_latency(id):
 
 func upnp_setup():
 	var upnp = UPNP.new()
-	
 	var discover_result = upnp.discover()
 	assert(discover_result == UPNP.UPNP_RESULT_SUCCESS, \
 		"UPNP Discover Failed! Error %s" % discover_result)
@@ -102,4 +134,9 @@ func upnp_setup():
 	assert(map_result == UPNP.UPNP_RESULT_SUCCESS, \
 		"UPNP Port Mapping Failed! Error %s" % map_result)
 	
+	external_ip_adress = "Server's ip address: %s" % upnp.query_external_address()
 	print("Success! Join Address: %s" % upnp.query_external_address())
+
+
+func _on_start_game_button_pressed():
+		start_game()

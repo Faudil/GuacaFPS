@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://csrbak5eugeat"]
 
-[ext_resource type="Script" path="res://scripts/multiplayer.gd" id="1_ts5w0"]
+[ext_resource type="Script" path="res://scripts/scenes/multiplayer.gd" id="1_xbyyg"]
 
 [node name="Multiplayer" type="Node"]
-script = ExtResource("1_ts5w0")
+script = ExtResource("1_xbyyg")
 
 [node name="Level" type="Node" parent="."]
 
@@ -19,6 +19,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 1
 
 [node name="Net" type="VBoxContainer" parent="UI"]
 layout_mode = 1
@@ -27,46 +28,29 @@ anchor_left = 4.389
 anchor_top = 1.793
 anchor_right = 4.389
 anchor_bottom = 1.793
-offset_left = 52.44
+offset_left = -138.56
 offset_top = -33.72
 offset_right = 694.44
-offset_bottom = 209.28
-
-[node name="Player info" type="HBoxContainer" parent="UI/Net"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="UI/Net/Player info"]
-layout_mode = 2
-text = "Enter you pseudo here: "
-
-[node name="Pseudo" type="LineEdit" parent="UI/Net/Player info"]
-layout_mode = 2
-expand_to_text_length = true
+offset_bottom = 363.28
 
 [node name="Option" type="HBoxContainer" parent="UI/Net"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="UI/Net/Option"]
+[node name="External Ip adress" type="Label" parent="UI/Net/Option"]
 layout_mode = 2
-text = "Server's ip address:  
+text = "
 "
-
-[node name="Remote" type="LineEdit" parent="UI/Net/Option"]
-layout_mode = 2
-text = "176.142.67.96"
-expand_to_text_length = true
-
-[node name="Connect" type="Button" parent="UI/Net/Option"]
-layout_mode = 2
-text = "Connect to game"
-
-[node name="Host" type="Button" parent="UI/Net/Option"]
-layout_mode = 2
-keep_pressed_outside = true
-text = "Create game"
 
 [node name="Ping" type="Label" parent="UI/Net"]
 layout_mode = 2
 
-[connection signal="pressed" from="UI/Net/Option/Connect" to="." method="_on_connect_pressed"]
-[connection signal="pressed" from="UI/Net/Option/Host" to="." method="_on_host_pressed"]
+[node name="StartGameButton" type="Button" parent="UI/Net"]
+visible = false
+layout_mode = 2
+text = "Start Game"
+
+[node name="ConnectedPlayer" type="Label" parent="UI/Net"]
+layout_mode = 2
+text = "Connected players"
+
+[connection signal="pressed" from="UI/Net/StartGameButton" to="." method="_on_start_game_button_pressed"]

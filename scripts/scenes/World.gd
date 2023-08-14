@@ -15,32 +15,30 @@ func _ready():
 		return
 	else:
 		print('Is multiplayer server')
-
-	multiplayer.peer_connected.connect(add_player)
+	# multiplayer.peer_connected.connect(add_player)
 	multiplayer.peer_disconnected.connect(del_player)
 
+
+func init(players: Array):
 	# Spawn already connected players
-	#for id in multiplayer.get_peers():
-	#	print("Add player", id)
-	#	if id in connected_players:
-	#		print("NOOOOOOOOOO")
-	#	else:
-	#		connected_players.append(id)
-			# add_player(id)
-	print("Lobby setup")
+	for player in players:
+		add_player(player["id"], player)
+	
 	# Spawn the local player unless this is a dedicated server export.
-	if not OS.has_feature("dedicated_server"):
-		add_player(1)
+	#if not OS.has_feature("dedicated_server"):
+	#	add_player(1, player_info)
 
 func _exit_tree():
 	if not multiplayer.is_server():
 		return
-	multiplayer.peer_connected.disconnect(add_player)
+	# multiplayer.peer_connected.disconnect(add_player)
 	multiplayer.peer_disconnected.disconnect(del_player)
 
 
-func add_player(id: int):
+func add_player(id: int, player_info: Dictionary):
+	print("Add player ", id, " ", player_info)
 	var character = preload("res://scenes/player.tscn").instantiate()
+	character.init(player_info)
 	# Set player id.
 	character.player = id
 	# Randomize character position.

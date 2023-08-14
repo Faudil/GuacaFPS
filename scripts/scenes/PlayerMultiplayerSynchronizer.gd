@@ -23,19 +23,12 @@ var _mouse_moved = false
 # Synchronized property.
 @export var direction := Vector3()
 
-
-@rpc("call_local")
-func register_pseudo(new_pseudo):
-	pseudo = new_pseudo
-
-
 func _ready():
 	# Only process for the local player.
 	print("PlayerInput ", multiplayer.get_unique_id())
 	var is_authority = multiplayer.get_unique_id() == get_multiplayer_authority()
 	if is_authority:
 		var player_vars = get_node("/root/Globals")
-		register_pseudo.rpc(player_vars.pseudo)
 		if not OS.has_feature("dedicated_server"):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 			print("Mouse captured")
@@ -74,7 +67,6 @@ func _process(delta):
 		jump.rpc()
 	if Input.is_action_just_pressed("fire"):
 		fire.rpc()
-		# firing = true
 	if Input.is_action_just_pressed("sprint"):
 		sprint.rpc()
 	if Input.is_action_just_released("sprint"):
@@ -87,7 +79,7 @@ func _process(delta):
 		$"../Head".rotate_y(-mouse_movement.x * SENSITIVITY)
 		# Camera rotation
 		camera.rotate_x(-mouse_movement.y * SENSITIVITY)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-60), deg_to_rad(60))
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 		camera_x_axis = camera.rotation.x
 		head_y_axis = head.rotation.y
 		

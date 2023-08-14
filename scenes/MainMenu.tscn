@@ -1,0 +1,151 @@
+[gd_scene load_steps=8 format=3 uid="uid://c6qdygjjqrwdm"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_g1b14"]
+[ext_resource type="Script" path="res://scripts/scenes/CreateGameButton.gd" id="1_ny5sn"]
+[ext_resource type="Script" path="res://scripts/scenes/CheckBox.gd" id="2_av7r7"]
+[ext_resource type="Script" path="res://scripts/scenes/JoinGameButton.gd" id="2_uwul3"]
+[ext_resource type="Script" path="res://scripts/scenes/OptionButton.gd" id="3_ludc8"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rptg6"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_b76xu"]
+font_size = 25
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameTitle" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Guaca FPS"
+
+[node name="TabContainer" type="TabContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="Player" type="VBoxContainer" parent="UI/VBoxContainer/TabContainer"]
+layout_mode = 2
+script = ExtResource("1_g1b14")
+
+[node name="LineEdit" type="LineEdit" parent="UI/VBoxContainer/TabContainer/Player"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+placeholder_text = "Enter your pseudo here"
+max_length = 20
+
+[node name="PickColorLabel" type="Label" parent="UI/VBoxContainer/TabContainer/Player"]
+layout_mode = 2
+text = "Pick the color of your avatar"
+label_settings = SubResource("LabelSettings_rptg6")
+
+[node name="ColorPicker" type="ColorPicker" parent="UI/VBoxContainer/TabContainer/Player"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+edit_alpha = false
+picker_shape = 2
+can_add_swatches = false
+sampler_visible = false
+color_modes_visible = false
+sliders_visible = false
+presets_visible = false
+
+[node name="JoinGameBox" type="VBoxContainer" parent="UI/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="HostIPAdressLineEdit" type="LineEdit" parent="UI/VBoxContainer/TabContainer/JoinGameBox"]
+layout_mode = 2
+text = "127.0.0.1"
+placeholder_text = "Enter the host IP adress here"
+
+[node name="JoinGameButton" type="Button" parent="UI/VBoxContainer/TabContainer/JoinGameBox"]
+layout_mode = 2
+text = "Join Game"
+script = ExtResource("2_uwul3")
+
+[node name="CreateGameBox" type="VBoxContainer" parent="UI/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="MaxPlayers" type="SpinBox" parent="UI/VBoxContainer/TabContainer/CreateGameBox"]
+layout_mode = 2
+max_value = 50.0
+value = 10.0
+prefix = "Max players:"
+
+[node name="CreateGameButton" type="Button" parent="UI/VBoxContainer/TabContainer/CreateGameBox"]
+layout_mode = 2
+text = "Create game"
+script = ExtResource("1_ny5sn")
+
+[node name="Settings" type="VBoxContainer" parent="UI/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="SettingsLabel" type="Label" parent="UI/VBoxContainer/TabContainer/Settings"]
+layout_mode = 2
+text = "Settings"
+label_settings = SubResource("LabelSettings_b76xu")
+
+[node name="AudioRow" type="HBoxContainer" parent="UI/VBoxContainer/TabContainer/Settings"]
+layout_mode = 2
+
+[node name="AudioSlider" type="VSlider" parent="UI/VBoxContainer/TabContainer/Settings/AudioRow"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+min_value = -30.0
+max_value = 10.0
+
+[node name="AudioLabel" type="Label" parent="UI/VBoxContainer/TabContainer/Settings/AudioRow"]
+layout_mode = 2
+text = "Audio slider"
+
+[node name="FullscreenRow" type="HBoxContainer" parent="UI/VBoxContainer/TabContainer/Settings"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="UI/VBoxContainer/TabContainer/Settings/FullscreenRow"]
+layout_mode = 2
+text = "Full screen mode"
+script = ExtResource("2_av7r7")
+
+[node name="ScreenSizeRow" type="HBoxContainer" parent="UI/VBoxContainer/TabContainer/Settings"]
+layout_mode = 2
+
+[node name="OptionButton" type="OptionButton" parent="UI/VBoxContainer/TabContainer/Settings/ScreenSizeRow"]
+layout_mode = 2
+script = ExtResource("3_ludc8")
+
+[node name="ScreenSizeLabel" type="Label" parent="UI/VBoxContainer/TabContainer/Settings/ScreenSizeRow"]
+layout_mode = 2
+text = "Select screen size"
+
+[node name="Lobby" type="Node" parent="."]
+
+[connection signal="text_changed" from="UI/VBoxContainer/TabContainer/Player/LineEdit" to="UI/VBoxContainer/TabContainer/Player" method="_on_line_edit_text_changed"]
+[connection signal="color_changed" from="UI/VBoxContainer/TabContainer/Player/ColorPicker" to="UI/VBoxContainer/TabContainer/Player" method="_on_color_picker_color_changed"]
+[connection signal="pressed" from="UI/VBoxContainer/TabContainer/JoinGameBox/JoinGameButton" to="UI/VBoxContainer/TabContainer/JoinGameBox/JoinGameButton" method="_on_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/TabContainer/CreateGameBox/CreateGameButton" to="UI/VBoxContainer/TabContainer/CreateGameBox/CreateGameButton" method="_on_pressed"]
+[connection signal="toggled" from="UI/VBoxContainer/TabContainer/Settings/FullscreenRow/CheckBox" to="UI/VBoxContainer/TabContainer/Settings/FullscreenRow/CheckBox" method="_on_toggled"]
+[connection signal="item_selected" from="UI/VBoxContainer/TabContainer/Settings/ScreenSizeRow/OptionButton" to="UI/VBoxContainer/TabContainer/Settings/ScreenSizeRow/OptionButton" method="_on_item_selected"]

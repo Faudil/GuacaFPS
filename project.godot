@@ -11,13 +11,17 @@ config_version=5
 [application]
 
 config/name="GuacaFPS"
-run/main_scene="res://scenes/lobby.tscn"
+run/main_scene="res://scenes/MainMenu.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*res://scripts/globals.gd"
+Globals="*res://scripts/scenes/globals.gd"
+
+[display]
+
+window/stretch/aspect="expand"
 
 [filesystem]
 

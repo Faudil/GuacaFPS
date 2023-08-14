@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=3 uid="uid://ctcboww0dorud"]
 
-[ext_resource type="Script" path="res://scripts/World.gd" id="1_tgb4r"]
+[ext_resource type="Script" path="res://scripts/scenes/World.gd" id="1_pwq3v"]
 [ext_resource type="PackedScene" uid="uid://dk8xiv0d00d21" path="res://assets/test_map.blend" id="2_dm3ud"]
 [ext_resource type="PackedScene" uid="uid://8en58gslqw65" path="res://scenes/player.tscn" id="3_e6ej5"]
 
@@ -56,7 +56,7 @@ normal_texture = SubResource("NoiseTexture2D_cu00c")
 [sub_resource type="PrismMesh" id="PrismMesh_l4an5"]
 
 [node name="World" type="Node3D"]
-script = ExtResource("1_tgb4r")
+script = ExtResource("1_pwq3v")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_no1qf")
@@ -101,6 +101,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 
 [node name="BestPlayer" type="Label" parent="Control"]
 layout_mode = 0

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ddx201y1kukg1"]
 
 [ext_resource type="PackedScene" uid="uid://d3cu7c5vjqv3k" path="res://assets/pistol.blend" id="2_22wpa"]
-[ext_resource type="Script" path="res://scripts/pistol.gd" id="2_h4tk1"]
+[ext_resource type="Script" path="res://scripts/scenes/pistol.gd" id="2_h4tk1"]
 [ext_resource type="AudioStream" uid="uid://0grmaud2d1ym" path="res://assets/sound/pistol_fire.ogg" id="3_75huc"]
 
 [node name="pistol" type="Node3D"]
@@ -13,5 +13,5 @@ transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.749721, 0, 0)
 stream = ExtResource("3_75huc")
-volume_db = -10.667
+volume_db = -13.0
 doppler_tracking = 2

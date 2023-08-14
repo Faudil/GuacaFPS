@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dk2d6kvml8ha0"
-path="res://.godot/imported/Material Base Color.png-27174d4e7e39882144703c9c35e9000d.ctex"
+uid="uid://dv3pdqq632eve"
+path="res://.godot/imported/Material Base Color.001.png-334e68fa8b7acca91d61a71578d742d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scripts/textures/Material Base Color.png"
-dest_files=["res://.godot/imported/Material Base Color.png-27174d4e7e39882144703c9c35e9000d.ctex"]
+source_file="res://assets/textures/Material Base Color.001.png"
+dest_files=["res://.godot/imported/Material Base Color.001.png-334e68fa8b7acca91d61a71578d742d3.ctex"]
 
 [params]
 
